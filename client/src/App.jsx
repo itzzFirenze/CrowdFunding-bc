@@ -20,6 +20,7 @@ const App = () => {
           <Route path="/create-campaign" element={<CreateCampaign />} />
           <Route path="/campaign-details/:id" element={<CampaignDetails />} />
         </Routes>
+
       </div>
     </div>
   )
