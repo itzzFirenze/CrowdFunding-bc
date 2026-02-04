@@ -28,7 +28,8 @@ const CreateCampaign = () => {
       e.preventDefault();
       checkIfImage(form.image, async (exists) => {
          if (exists) {
-            await createCampaign({ ...form, target: ethers.utils.parseUnits(form.target, 18) });
+            await createCampaign({ ...form });
+            // await createCampaign({ ...form, target: ethers.utils.parseUnits(form.target, 18) });
             setisLoading(false);
             naviagte('/')
          } else {

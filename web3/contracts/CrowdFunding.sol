@@ -31,7 +31,7 @@ contract CrowdFunding {
 
         // Validating that the deadline is a date in the future
         require(
-            campaign.deadline < block.timestamp,
+            _deadline > block.timestamp,
             "The deadline should be a date in the future."
         );
 
