@@ -6,7 +6,7 @@ const Home = () => {
    const [isLoading, setIsLoading] = useState(false);
    const [campaigns, setCampaigns] = useState([]);
 
-   const { address, contract, getCampaigns } = useStateContext();
+   const { address, contract, getCampaigns, search } = useStateContext();
 
    const fetchCampaigns = async () => {
       setIsLoading(true);
@@ -21,11 +21,16 @@ const Home = () => {
       }
    }, [address, contract]);
 
+   const filteredCampaigns = campaigns.filter((campaign) =>
+      campaign.title.toLowerCase().includes(search.toLowerCase())
+   );
+
    return (
       <DisplayCampaigns
          title="All Campaigns"
          isLoading={isLoading}
-         campaigns={campaigns}
+         // 3. Pass filtered campaigns instead of raw campaigns
+         campaigns={search ? filteredCampaigns : campaigns}
       />
    )
 }
