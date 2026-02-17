@@ -49,19 +49,27 @@ contract CrowdFunding {
     }
 
     function donateToCampaign(uint256 _id) public payable {
-        uint256 amount = msg.value;
+    Campaign storage campaign = campaigns[_id];
 
-        Campaign storage campaign = campaigns[_id];
+    require(msg.value > 0, "Donation must be greater than 0");
 
-        campaign.donators.push(msg.sender);
-        campaign.donations.push(amount);
+    require(block.timestamp < campaign.deadline, "Campaign has ended");
 
-        (bool sent, ) = payable(campaign.owner).call{value: amount}("");
+    require(
+        campaign.amountCollected + msg.value <= campaign.target,
+        "Donation exceeds campaign goal"
+    );
 
-        if (sent) {
-            campaign.amountCollected = campaign.amountCollected + amount;
-        }
-    }
+    campaign.donators.push(msg.sender);
+    campaign.donations.push(msg.value);
+
+    campaign.amountCollected += msg.value;
+
+    (bool sent, ) = payable(campaign.owner).call{value: msg.value}("");
+    require(sent, "Failed to send Ether");
+}
+
+
 
     function getDonators(
         uint256 _id
@@ -70,14 +78,14 @@ contract CrowdFunding {
     }
 
     function getCampaigns() public view returns (Campaign[] memory) {
-      Campaign[] memory allCampaigns = new Campaign[](numberOfCampaigns); 
+        Campaign[] memory allCampaigns = new Campaign[](numberOfCampaigns);
 
-      for(uint i =0; i < numberOfCampaigns; i++) {
-         Campaign storage item = campaigns[i];
+        for (uint i = 0; i < numberOfCampaigns; i++) {
+            Campaign storage item = campaigns[i];
 
-         allCampaigns[i] = item;
-      }
+            allCampaigns[i] = item;
+        }
 
-      return allCampaigns;
+        return allCampaigns;
     }
 }

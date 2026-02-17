@@ -16,6 +16,8 @@ const CampaignDetails = () => {
    const [donators, setDonators] = useState([]);
 
    const remainingDays = daysLeft(state.deadline);
+   const isGoalReached =
+      Number(state.amountCollected) >= Number(state.target);
 
    const fetchDonators = async () => {
       const data = await getDonations(state.pId);
@@ -71,9 +73,9 @@ const CampaignDetails = () => {
                         <h4 className='font-epilogue font-semibold text-[14px] text-white break-all'>
                            {state.owner}
                         </h4>
-                        <p className='mt-[4px] font-epilogue font-normal text-[12px] text-[#808191]'>
+                        {/* <p className='mt-[4px] font-epilogue font-normal text-[12px] text-[#808191]'>
                            10 Campaigns
-                        </p>
+                        </p> */}
                      </div>
                   </div>
                </div>
@@ -130,9 +132,9 @@ const CampaignDetails = () => {
                   </div>
                   <CustomButton
                      btnType="button"
-                     title="Fund Campaign"
-                     styles="w-full bg-[#8c6dfd]"
-                     handleClick={handleDonate}
+                     title={isGoalReached ? "Campaign Completed" : "Fund Campaign"}
+                     styles={`w-full ${isGoalReached ? "bg-gray-500 cursor-not-allowed" : "bg-[#8c6dfd]"}`}
+                     handleClick={!isGoalReached ? handleDonate : null}
                   />
                </div>
             </div>
