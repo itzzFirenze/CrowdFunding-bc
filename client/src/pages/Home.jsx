@@ -29,7 +29,6 @@ const Home = () => {
       <DisplayCampaigns
          title="All Campaigns"
          isLoading={isLoading}
-         // 3. Pass filtered campaigns instead of raw campaigns
          campaigns={search ? filteredCampaigns : campaigns}
       />
    )
