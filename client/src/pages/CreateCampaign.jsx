@@ -1,54 +1,64 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ethers } from 'ethers';
 import { useStateContext } from '../context';
-import { money } from '../assets';
 import { CustomButton, FormField, Loader } from '../components';
 import { checkIfImage } from '../utils';
-import { use } from 'react';
+
+const CATEGORIES = ['Education', 'Health', 'Technology', 'Art', 'Community', 'Other'];
 
 const CreateCampaign = () => {
-   const naviagte = useNavigate();
-   const [isLoading, setisLoading] = useState(false);
+   const navigate = useNavigate();
+   const [isLoading, setIsLoading] = useState(false);
    const { createCampaign } = useStateContext();
-   const [form, setform] = useState({
+   const [form, setForm] = useState({
       name: '',
       title: '',
       description: '',
       target: '',
       deadline: '',
-      image: ''
-   })
+      image: '',
+      category: 'Other',
+   });
 
    const handleFormFieldChange = (fieldName, e) => {
-      setform({ ...form, [fieldName]: e.target.value })
-   }
+      setForm({ ...form, [fieldName]: e.target.value });
+   };
 
    const handleSubmit = async (e) => {
       e.preventDefault();
       checkIfImage(form.image, async (exists) => {
          if (exists) {
-            await createCampaign({ ...form });
-            // await createCampaign({ ...form, target: ethers.utils.parseUnits(form.target, 18) });
-            setisLoading(false);
-            naviagte('/')
+            setIsLoading(true);
+            try {
+               await createCampaign({ ...form });
+               navigate('/');
+            } catch (err) {
+               console.error(err);
+               alert('Failed to create campaign. Please try again.');
+            } finally {
+               setIsLoading(false);
+            }
          } else {
-            alert('Provide valid image URL');
-            setform({ ...form, image: '' });
+            alert('Please provide a valid image URL.');
+            setForm({ ...form, image: '' });
          }
-      })
-   }
+      });
+   };
 
    return (
       <div className='bg-[#1c1c24] flex justify-center items-center flex-col rounded-[10px] sm:p-10 p-4'>
          {isLoading && <Loader />}
+
          <div className='flex justify-center items-center p-[16px] sm:min-w-[380px] bg-[#3a3a43] rounded-[10px]'>
-            <h1 className='font-epilogue font-bold sm:text-[25px] text-[18px] leading-[38px] text-white'>Start a campaign</h1>
+            <h1 className='font-epilogue font-bold sm:text-[25px] text-[18px] leading-[38px] text-white'>
+               Start a Campaign
+            </h1>
          </div>
+
          <form onSubmit={handleSubmit} className='w-full mt-[65px] flex flex-col gap-[30px]'>
             <div className='flex flex-wrap gap-[40px]'>
                <FormField
-                  labelName="Your name *"
+                  labelName="Your Name *"
                   placeholder="John Doe"
                   inputType="text"
                   value={form.name}
@@ -62,17 +72,33 @@ const CreateCampaign = () => {
                   handleChange={(e) => handleFormFieldChange('title', e)}
                />
             </div>
+
             <FormField
                labelName="Story *"
-               placeholder="Write a story"
+               placeholder="Write your campaign story..."
                isTextArea
                value={form.description}
                handleChange={(e) => handleFormFieldChange('description', e)}
             />
-            {/* <div className='w-full flex justify-start items-center p-4 bg-[#8c6dfd] h-[120px] rounded-[10px]'>
-               <img src={money} alt="money" className='w-[40px] h-[40px] object-contain' />
-               <h4 className='font-epilogue font-bold text-[25px] text-white ml-[20px]'>You will get 100% of the raised amount</h4>
-            </div> */}
+
+            {/* Category dropdown */}
+            <div className='flex flex-col flex-1 w-full'>
+               <label className='font-epilogue font-medium text-[14px] leading-[22px] text-[#808191] mb-[10px]'>
+                  Category *
+               </label>
+               <select
+                  value={form.category}
+                  onChange={(e) => handleFormFieldChange('category', e)}
+                  className='py-[15px] sm:px-[25px] px-[15px] border-[1px] border-[#3a3a43] bg-[#1c1c24] font-epilogue text-white text-[14px] placeholder:text-[#4b5264] rounded-[10px] focus:outline-none focus:border-[#8c6dfd] transition-colors w-full sm:w-[48%] cursor-pointer'
+               >
+                  {CATEGORIES.map((cat) => (
+                     <option key={cat} value={cat} className="bg-[#1c1c24] text-white">
+                        {cat}
+                     </option>
+                  ))}
+               </select>
+            </div>
+
             <div className='flex flex-wrap gap-[40px]'>
                <FormField
                   labelName="Goal *"
@@ -89,8 +115,9 @@ const CreateCampaign = () => {
                   handleChange={(e) => handleFormFieldChange('deadline', e)}
                />
             </div>
+
             <FormField
-               labelName="Campaign image *"
+               labelName="Campaign Image *"
                placeholder="Place image URL of your campaign"
                inputType="url"
                value={form.image}
@@ -100,13 +127,13 @@ const CreateCampaign = () => {
             <div className='flex justify-center items-center mt-[40px]'>
                <CustomButton
                   btnType="submit"
-                  title="Submit new campaign"
+                  title="Submit New Campaign"
                   styles="bg-[#1dc071]"
                />
             </div>
          </form>
       </div>
-   )
-}
+   );
+};
 
-export default CreateCampaign
+export default CreateCampaign;

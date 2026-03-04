@@ -12,7 +12,7 @@ const StateContext = createContext();
 
 export const StateContextProvider = ({ children }) => {
    const { contract } = useContract(
-      "0xdaFFF163FA93cC389f4584B1D5fB138D4988B4D3"
+      "0xa2b9860CF6071Cba3E3DA90F700a0cdaC558732D"
    );
 
    const { mutateAsync: createCampaign } = useContractWrite(
@@ -26,24 +26,32 @@ export const StateContextProvider = ({ children }) => {
 
    const [search, setSearch] = useState('');
 
-   const publishCampaign = async (form) => {
-      if (!address) {
-         throw new Error("Wallet not connected");
-      }
+   // ─── Campaign Status Enum ──────────────────────────────────────────────────
+   // Mirrors the Solidity enum: Active=0, GoalReached=1, Expired=2, Cancelled=3, Withdrawn=4
+   const STATUS_LABELS = {
+      0: 'Active',
+      1: 'Goal Reached',
+      2: 'Expired',
+      3: 'Cancelled',
+      4: 'Withdrawn',
+   };
 
+   // ─── Create Campaign ───────────────────────────────────────────────────────
+   const publishCampaign = async (form) => {
+      if (!address) throw new Error("Wallet not connected");
       try {
          const data = await createCampaign({
             args: [
-               address, // owner
-               form.title, // string
-               form.description, // string
-               ethers.utils.parseEther(form.target.toString()), // uint256
-               Math.floor(new Date(form.deadline).getTime() / 1000), // seconds
-               form.image, // string
+               address,
+               form.title,
+               form.description,
+               form.category || 'Other',
+               ethers.utils.parseEther(form.target.toString()),
+               Math.floor(new Date(form.deadline).getTime() / 1000),
+               form.image,
             ],
          });
-
-         console.log("Contract call success:", data);
+         console.log("Campaign created:", data);
          return data;
       } catch (error) {
          console.error("Contract call failure:", error);
@@ -51,49 +59,83 @@ export const StateContextProvider = ({ children }) => {
       }
    };
 
+   // ─── Read Campaigns ────────────────────────────────────────────────────────
    const getCampaigns = async () => {
       const campaigns = await contract.call("getCampaigns");
-
-      const parsedCampaigns = campaigns.map((campaign, i) => ({
+      return campaigns.map((campaign, i) => ({
          owner: campaign.owner,
          title: campaign.title,
          description: campaign.description,
+         category: campaign.category || 'Other',
          target: ethers.utils.formatEther(campaign.target.toString()),
          deadline: campaign.deadline.toNumber(),
          amountCollected: ethers.utils.formatEther(campaign.amountCollected.toString()),
          image: campaign.image,
-         pId: i
+         cancelled: campaign.cancelled,
+         withdrawn: campaign.withdrawn,
+         pId: i,
       }));
-      return parsedCampaigns;
-   }
+   };
 
    const getUserCampaigns = async () => {
       const allCampaigns = await getCampaigns();
-      const filteredCampaigns = allCampaigns.filter((campaign) => campaign.owner === address);
+      return allCampaigns.filter((campaign) => campaign.owner === address);
+   };
 
-      return filteredCampaigns;
-   }
-
+   // ─── Donate ───────────────────────────────────────────────────────────────
    const donate = async (pId, amount) => {
-      const data = await contract.call("donateToCampaign", [pId], { value: ethers.utils.parseEther(amount) });
+      return await contract.call(
+         "donateToCampaign",
+         [pId],
+         { value: ethers.utils.parseEther(amount) }
+      );
+   };
 
-      return data;
-   }
+   // ─── Withdraw Funds ───────────────────────────────────────────────────────
+   const withdrawFunds = async (pId) => {
+      return await contract.call("withdrawFunds", [pId]);
+   };
 
+   // ─── Cancel Campaign ──────────────────────────────────────────────────────
+   const cancelCampaign = async (pId) => {
+      return await contract.call("cancelCampaign", [pId]);
+   };
+
+   // ─── Claim Refund ─────────────────────────────────────────────────────────
+   const claimRefund = async (pId) => {
+      return await contract.call("claimRefund", [pId]);
+   };
+
+   // ─── Get Campaign Status ──────────────────────────────────────────────────
+   const getCampaignStatus = async (pId) => {
+      const statusNum = await contract.call("getCampaignStatus", [pId]);
+      // Contract returns a uint8 which ethers wraps as BigNumber — convert to plain int
+      const code = statusNum?.toNumber?.() ?? Number(statusNum);
+      return {
+         code,
+         label: STATUS_LABELS[code] ?? 'Unknown',
+      };
+   };
+
+   // ─── Get Donor Contribution ───────────────────────────────────────────────
+   const getDonorContribution = async (pId, donorAddress) => {
+      const wei = await contract.call("getDonorContribution", [pId, donorAddress]);
+      return ethers.utils.formatEther(wei.toString());
+   };
+
+   // ─── Get Donations list ───────────────────────────────────────────────────
    const getDonations = async (pId) => {
       const donations = await contract.call("getDonators", [pId]);
-      const numberofDonations = donations[0].length;
-
-      const parsedDonations = [];
-      for (let i = 0; i < numberofDonations; i++) {
-         parsedDonations.push({
+      const count = donations[0].length;
+      const parsed = [];
+      for (let i = 0; i < count; i++) {
+         parsed.push({
             donator: donations[0][i],
-            donation: ethers.utils.formatEther(donations[1][i].toString())
+            donation: ethers.utils.formatEther(donations[1][i].toString()),
          });
       }
-
-      return parsedDonations;
-   }
+      return parsed;
+   };
 
    return (
       <StateContext.Provider
@@ -107,8 +149,13 @@ export const StateContextProvider = ({ children }) => {
             getUserCampaigns,
             donate,
             getDonations,
+            withdrawFunds,
+            cancelCampaign,
+            claimRefund,
+            getCampaignStatus,
+            getDonorContribution,
             search,
-            setSearch
+            setSearch,
          }}
       >
          {children}

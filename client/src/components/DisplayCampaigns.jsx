@@ -21,14 +21,20 @@ const DisplayCampaigns = ({ title, isLoading, campaigns }) => {
             )}
 
             {!isLoading && campaigns.length === 0 && (
-               <p className='font-epilogue font-semibold text-[14px] leading-[30px] text-[#818183]'>
-                  You have not created any campaigns yet
-               </p>
+               <div className="w-full flex flex-col items-center justify-center py-16 text-center">
+                  <span className="text-6xl mb-4">🔍</span>
+                  <p className='font-epilogue font-semibold text-[16px] text-[#818183]'>
+                     No campaigns found
+                  </p>
+                  <p className="font-epilogue text-[13px] text-[#4b5264] mt-1">
+                     Try adjusting your filters or search terms
+                  </p>
+               </div>
             )}
 
             {!isLoading && campaigns.length > 0 && campaigns.map((campaign) =>
                <FundCard
-                  key={campaign.id}
+                  key={campaign.pId}
                   {...campaign}
                   handleClick={() => handleNavigate(campaign)}
                />
