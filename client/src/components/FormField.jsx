@@ -1,7 +1,6 @@
 import React from 'react'
 
 const FormField = ({ labelName, placeholder, inputType, isTextArea, value, handleChange }) => {
-   // Shared styles for both input and textarea
    const baseInputStyles = "py-[15px] sm:px-[25px] px-[15px] outline-none border border-[#374151] bg-[#1F2937]/50 font-epilogue text-white text-[14px] placeholder:text-[#9CA3AF] rounded-xl focus:border-[#6366F1] focus:bg-[#1F2937] focus:ring-2 focus:ring-[#6366F1]/20 transition-all duration-300 sm:min-w-[300px]";
 
    return (

@@ -17,15 +17,15 @@ contract CrowdFunding {
         address owner;
         string  title;
         string  description;
-        string  category;    // e.g. Education, Health, Technology …
+        string  category;
         uint256 target;
         uint256 deadline;
         uint256 amountCollected;
         string  image;
         address[] donators;
         uint256[] donations;
-        bool    cancelled;   // true if owner cancelled
-        bool    withdrawn;   // true if owner already withdrew
+        bool    cancelled;
+        bool    withdrawn;
     }
 
     // ─── Storage ──────────────────────────────────────────────────────────────
@@ -100,7 +100,6 @@ contract CrowdFunding {
 
     /**
      * @dev Donate ETH to a campaign. Funds are held in the contract (escrow).
-     *      Donations are accepted even after the goal is reached (generosity 💛).
      */
     function donateToCampaign(uint256 _id)
         public

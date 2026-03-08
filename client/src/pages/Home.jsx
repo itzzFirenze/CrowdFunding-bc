@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useStateContext } from '../context';
 import DisplayCampaigns from '../components/DisplayCampaigns';
 import { daysLeft } from '../utils';
-
-// Import icons from react-icons
 import { FaChartBar, FaClock, FaGem, FaCheckCircle, FaGlobe, FaBook, FaHeart, FaLaptop, FaPalette, FaUsers, FaThumbtack } from 'react-icons/fa';
 
 const SORT_OPTIONS = [
@@ -60,6 +58,8 @@ const Home = () => {
       filtered = filtered.sort((a, b) => Number(b.amountCollected) - Number(a.amountCollected));
    } else if (sortKey === 'goal_reached') {
       filtered = filtered.filter((c) => Number(c.amountCollected) >= Number(c.target));
+   } else if (sortKey === 'all') {
+      filtered = filtered.sort((a, b) => Number(b.pId) - Number(a.pId));
    }
 
    return (
@@ -71,7 +71,7 @@ const Home = () => {
             </h1>
          </div>
 
-         {/* Filters Section - Compact Row on Desktop */}
+         {/* Filters Section */}
          <div className="flex flex-col lg:flex-row gap-6 mb-8 bg-[#1F2937]/50 p-4 rounded-2xl border border-[#374151]">
 
             {/* Sort Options */}

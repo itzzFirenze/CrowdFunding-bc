@@ -22,11 +22,9 @@ const FundCard = ({ owner, title, description, target, deadline, amountCollected
 
    return (
       <div
-         // Removed fixed width (sm:w-[320px]). Added h-full and flex-col for uniform cards.
          className='w-full h-full flex flex-col rounded-2xl bg-gradient-to-br from-[#1F2937] to-[#111827] cursor-pointer hover:scale-[1.03] hover:shadow-2xl hover:shadow-indigo-500/20 transition-all duration-300 overflow-hidden border border-[#374151] group'
          onClick={handleClick}
       >
-         {/* Image + status overlay (shrink-0 keeps image height strictly at 180px) */}
          <div className="relative overflow-hidden shrink-0">
             <img
                src={image}
@@ -40,7 +38,7 @@ const FundCard = ({ owner, title, description, target, deadline, amountCollected
                {resolvedCategory}
             </span>
 
-            {/* Status badges with React Icons */}
+            {/* Status badges */}
             {isGoalReached && (
                <span className="absolute top-3 right-3 px-3 py-1.5 rounded-full bg-gradient-to-r from-[#10B981] to-[#059669] text-white text-[11px] font-epilogue font-bold shadow-lg backdrop-blur-sm flex items-center gap-1.5">
                   <FaCheckCircle size={12} /> Funded
@@ -53,7 +51,6 @@ const FundCard = ({ owner, title, description, target, deadline, amountCollected
             )}
          </div>
 
-         {/* Content area: flex-grow ensures the bottom container is pushed down identically across cards */}
          <div className='flex flex-col flex-1 p-5'>
             {/* Title & Description */}
             <div className='mb-4'>
@@ -65,7 +62,6 @@ const FundCard = ({ owner, title, description, target, deadline, amountCollected
                </p>
             </div>
 
-            {/* mt-auto pushes everything inside this div to the bottom securely */}
             <div className="mt-auto">
                {/* Progress Section */}
                <div className="mb-4">

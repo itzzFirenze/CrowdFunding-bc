@@ -22,7 +22,6 @@ const DisplayCampaigns = ({ title, isLoading, campaigns }) => {
             </h1>
          </div>
 
-         {/* Changed to CSS Grid: 1 col on mobile, 2 on tablet, 4 on desktop */}
          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6'>
             {isLoading && (
                <div className="col-span-full flex items-center justify-center py-20">

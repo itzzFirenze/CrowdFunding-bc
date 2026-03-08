@@ -5,21 +5,20 @@ import { navlinks } from '../constants';
 import { useStateContext } from '../context';
 
 const Icon = ({ styles, name, imgUrl, isActive, disabled, handleClick }) => (
-   <div 
-      className={`w-[48px] h-[48px] rounded-xl flex justify-center items-center transition-all duration-300 ${!disabled && 'cursor-pointer hover:scale-105'} ${
-         isActive && isActive === name 
-         ? 'bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] shadow-lg shadow-indigo-500/30' 
-         : 'bg-transparent hover:bg-[#374151]'
-      } ${styles}`} 
+   <div
+      className={`w-[48px] h-[48px] rounded-xl flex justify-center items-center transition-all duration-300 ${!disabled && 'cursor-pointer hover:scale-105'} ${isActive && isActive === name
+            ? 'bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] shadow-lg shadow-indigo-500/30'
+            : 'bg-transparent hover:bg-[#374151]'
+         } ${styles}`}
       onClick={handleClick}
    >
       {!isActive ? (
          <img src={imgUrl} alt="fund_logo" className='w-1/2 h-1/2 opacity-70' />
       ) : (
-         <img 
-            src={imgUrl} 
-            alt="fund_logo" 
-            className={`w-1/2 h-1/2 transition-all ${isActive !== name ? 'grayscale opacity-70' : 'brightness-200'}`} 
+         <img
+            src={imgUrl}
+            alt="fund_logo"
+            className={`w-1/2 h-1/2 transition-all ${isActive !== name ? 'grayscale opacity-70' : 'brightness-200'}`}
          />
       )}
    </div>
@@ -30,7 +29,7 @@ const Sidebar = () => {
    const { disconnect } = useStateContext();
 
    const [isActive, setIsActive] = useState('dashboard');
-   
+
    return (
       <div className='flex justify-between items-center flex-col sticky top-5 h-[93vh]'>
          <Link to="/">

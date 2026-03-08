@@ -5,16 +5,13 @@ import { useToast } from '../context/ToastContext';
 import { CustomButton, CountBox, Loader } from '../components';
 import { calculateBarPercentage, daysLeft } from '../utils';
 import { thirdweb } from '../assets';
-
-// Import icons
-import { 
-   FaCircle, FaCheckCircle, FaClock, FaTimesCircle, FaMoneyBillWave, 
-   FaCrown, FaUndo, FaShareAlt, FaCheck, FaRegFrownOpen 
+import {
+   FaCircle, FaCheckCircle, FaClock, FaTimesCircle, FaMoneyBillWave,
+   FaCrown, FaUndo, FaShareAlt, FaCheck, FaRegFrownOpen, FaHeart
 } from 'react-icons/fa';
 
 const QUICK_AMOUNTS = ['0.01', '0.05', '0.1', '0.5'];
 
-// Synchronized with FundCard gradients
 const CATEGORY_COLORS = {
    Education: 'bg-gradient-to-r from-[#3B82F6] to-[#2563EB]',
    Health: 'bg-gradient-to-r from-[#EF4444] to-[#DC2626]',
@@ -32,7 +29,7 @@ const STATUS_CONFIG = {
    'Withdrawn': { color: 'text-[#6366F1] border-[#6366F1]/30 bg-[#6366F1]/10', icon: <FaMoneyBillWave /> },
 };
 
-// ─── Action Button ────────────────────────────────────────────────────────────
+// Action Button
 const ActionButton = ({ title, onClick, styles, disabled = false, isLoading, icon: IconComponent }) => (
    <button
       onClick={disabled || isLoading ? undefined : onClick}
@@ -49,14 +46,14 @@ const ActionButton = ({ title, onClick, styles, disabled = false, isLoading, ico
    </button>
 );
 
-// ─── Section Heading ──────────────────────────────────────────────────────────
+// Section Heading
 const SectionHeading = ({ children }) => (
    <h4 className="font-epilogue font-bold text-[18px] text-white uppercase tracking-wider">
       {children}
    </h4>
 );
 
-// ─── Derive status from already-fetched campaign state ───
+// Derive status from already-fetched campaign state
 const deriveStatusFromState = (s, remaining) => {
    const STATUS_LABELS = {
       0: 'Active',
@@ -73,7 +70,7 @@ const deriveStatusFromState = (s, remaining) => {
    return { code, label: STATUS_LABELS[code] };
 };
 
-// ─── Main Component ───────────────────────────────────────────────────────────
+// Main Component
 const CampaignDetails = () => {
    const { state } = useLocation();
    const navigate = useNavigate();
@@ -111,7 +108,9 @@ const CampaignDetails = () => {
    const canCancel = isOwner && isActive && !isWithdrawn;
    const canRefund = !isOwner && (isCancelled || isExpired) && Number(donorContrib) > 0;
 
-   // ─── Fetch data ─────────────────────────────────────────────────────────────
+   const remainingToGoal = Math.max(0, Number(state.target) - Number(state.amountCollected));
+
+   // Fetch data
    const fetchAll = async () => {
       const [donations, status] = await Promise.all([
          getDonations(state.pId),
@@ -130,7 +129,7 @@ const CampaignDetails = () => {
       if (contract) fetchAll();
    }, [contract, address]);
 
-   // ─── Actions ──────────────────────────────────────────────────────────────
+   // Actions
    const withAction = (key, fn, successMsg, errorMsg) => async () => {
       setActionLoading(key);
       try {
@@ -151,32 +150,47 @@ const CampaignDetails = () => {
       async () => {
          if (!amount || isNaN(amount) || Number(amount) <= 0)
             throw new Error('Please enter a valid ETH amount');
+
+         // Calculate remaining amount needed to reach goal
+         const targetAmount = Number(state.target);
+         const currentAmount = Number(state.amountCollected);
+         const remainingAmount = targetAmount - currentAmount;
+         const donationAmount = Number(amount);
+
+         // Check if donation would exceed the goal
+         if (donationAmount > remainingAmount) {
+            throw new Error(
+               `Donation amount (${donationAmount} ETH) exceeds remaining goal amount (${remainingAmount.toFixed(4)} ETH). ` +
+               `Please donate ${remainingAmount.toFixed(4)} ETH or less.`
+            );
+         }
+
          await donate(state.pId, amount);
          setAmount('');
          navigate('/');
       },
-      '🎉 Donation successful! Thank you for your support.',
+      'Donation successful! Thank you for your support.',
       'Donation failed'
    );
 
    const handleWithdraw = withAction(
       'withdraw',
       () => withdrawFunds(state.pId),
-      '💰 Funds withdrawn successfully!',
+      'Funds withdrawn successfully!',
       'Withdrawal failed'
    );
 
    const handleCancel = withAction(
       'cancel',
       () => cancelCampaign(state.pId),
-      '❌ Campaign cancelled. Donors can now claim refunds.',
+      'Campaign cancelled. Donors can now claim refunds.',
       'Cancel failed'
    );
 
    const handleRefund = withAction(
       'refund',
       () => claimRefund(state.pId),
-      '💸 Refund claimed successfully!',
+      'Refund claimed successfully!',
       'Refund failed'
    );
 
@@ -197,12 +211,11 @@ const CampaignDetails = () => {
 
    const statusCfg = STATUS_CONFIG[statusLabel] || STATUS_CONFIG['Active'];
 
-   // ─── Render ───────────────────────────────────────────────────────────────
    return (
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pb-10">
          {(isLoading) && <Loader />}
 
-         {/* ── Status Banner ── */}
+         {/* Status Banner */}
          {campaignStatus && (
             <div className={`w-full mb-6 px-6 py-4 rounded-xl flex items-center gap-4 border shadow-sm backdrop-blur-md ${statusCfg.color}`}>
                <span className="text-2xl">{statusCfg.icon}</span>
@@ -229,7 +242,7 @@ const CampaignDetails = () => {
             </div>
          )}
 
-         {/* ── Hero ── */}
+         {/* Hero */}
          <div className="w-full flex lg:flex-row flex-col gap-8">
             <div className="flex-1 flex-col">
                <div className="relative overflow-hidden rounded-2xl border border-[#374151]">
@@ -260,7 +273,7 @@ const CampaignDetails = () => {
             </div>
          </div>
 
-         {/* ── Body ── */}
+         {/* Body */}
          <div className="mt-10 flex lg:flex-row flex-col gap-8">
             <div className="flex-[2] flex flex-col gap-10">
 
@@ -290,7 +303,7 @@ const CampaignDetails = () => {
                         onClick={handleShare}
                         className="flex items-center gap-2 px-4 py-2 bg-[#1F2937] hover:bg-[#374151] border border-[#374151] rounded-xl text-[#9CA3AF] hover:text-white transition-all duration-200 font-epilogue text-[13px] shadow-sm"
                      >
-                        {copied ? <><FaCheck className="text-emerald-500"/> Copied!</> : <><FaShareAlt /> Share</>}
+                        {copied ? <><FaCheck className="text-emerald-500" /> Copied!</> : <><FaShareAlt /> Share</>}
                      </button>
                   </div>
                   <div className="p-6 bg-gradient-to-br from-[#1F2937] to-[#111827] border border-[#374151] rounded-2xl">
@@ -337,10 +350,10 @@ const CampaignDetails = () => {
                </div>
             </div>
 
-            {/* ── Right Column ── */}
+            {/* Right Column */}
             <div className="flex-1 flex flex-col gap-6">
 
-               {/* ── Owner Panel ── */}
+               {/* Owner Panel */}
                {isOwner && (
                   <div className="flex flex-col gap-4 p-6 bg-gradient-to-br from-[#1F2937] to-[#111827] rounded-2xl border border-indigo-500/30 shadow-lg shadow-indigo-500/10">
                      <div className="flex items-center gap-2 mb-2 pb-3 border-b border-[#374151]">
@@ -380,7 +393,7 @@ const CampaignDetails = () => {
                   </div>
                )}
 
-               {/* ── Donor Refund Panel ── */}
+               {/* Donor Refund Panel */}
                {!isOwner && (isCancelled || isExpired) && (
                   <div className="flex flex-col gap-4 p-6 bg-gradient-to-br from-[#1F2937] to-[#111827] rounded-2xl border border-orange-500/30 shadow-lg shadow-orange-500/10">
                      <div className="flex items-center gap-2 mb-2 pb-3 border-b border-[#374151]">
@@ -409,13 +422,22 @@ const CampaignDetails = () => {
                   </div>
                )}
 
-               {/* ── Fund Panel ── */}
+               {/* Fund Panel */}
                <div className="flex-1">
                   <SectionHeading>Fund</SectionHeading>
                   <div className="mt-4 flex flex-col p-6 bg-gradient-to-br from-[#1F2937] to-[#111827] border border-[#374151] rounded-2xl gap-5 shadow-xl">
                      <p className="font-epilogue font-medium text-[16px] text-center text-[#9CA3AF]">
                         Support this campaign
                      </p>
+
+                     {/* Show remaining amount if campaign is active */}
+                     {canDonate && remainingToGoal > 0 && (
+                        <div className="p-3 bg-[#1F2937]/70 rounded-xl border border-[#6366F1]/30">
+                           <p className="font-epilogue text-[12px] text-[#9CA3AF] text-center">
+                              Remaining to goal: <span className="text-[#10B981] font-bold">{remainingToGoal.toFixed(4)} ETH</span>
+                           </p>
+                        </div>
+                     )}
 
                      {/* Quick-select amounts */}
                      <div>

@@ -58,7 +58,6 @@ const CreateCampaign = () => {
 
          <form onSubmit={handleSubmit} className='w-full flex flex-col gap-[30px]'>
 
-            {/* Row 1 */}
             <div className='grid grid-cols-1 sm:grid-cols-2 gap-[40px]'>
                <FormField
                   labelName="Your Name *"
@@ -102,7 +101,6 @@ const CreateCampaign = () => {
                </select>
             </div>
 
-            {/* Row 2 */}
             <div className='grid grid-cols-1 sm:grid-cols-2 gap-[40px]'>
                <FormField
                   labelName="Goal *"

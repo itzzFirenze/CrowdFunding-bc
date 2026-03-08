@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useStateContext } from '../context';
 import DisplayCampaigns from '../components/DisplayCampaigns';
 import { daysLeft } from '../utils';
-
-// Import icons from react-icons
 import { FaClipboardList, FaEthereum, FaRocket } from 'react-icons/fa';
 
 const StatCard = ({ label, value, icon: IconComponent, iconColor }) => (
@@ -25,13 +23,13 @@ const StatCard = ({ label, value, icon: IconComponent, iconColor }) => (
 const Profile = () => {
    const [isLoading, setIsLoading] = useState(false);
    const [campaigns, setCampaigns] = useState([]);
-
    const { address, contract, getUserCampaigns } = useStateContext();
 
    const fetchCampaigns = async () => {
       setIsLoading(true);
       const data = await getUserCampaigns();
-      setCampaigns(data);
+      const sortedData = data.sort((a, b) => Number(b.pId) - Number(a.pId));
+      setCampaigns(sortedData);
       setIsLoading(false);
    };
 
@@ -50,23 +48,23 @@ const Profile = () => {
          {/* Stats bar */}
          {campaigns.length > 0 && (
             <div className="flex flex-wrap gap-4 mb-8">
-               <StatCard 
-                  icon={FaClipboardList} 
-                  iconColor="text-[#6366F1]" 
-                  label="Total Campaigns" 
-                  value={campaigns.length} 
+               <StatCard
+                  icon={FaClipboardList}
+                  iconColor="text-[#6366F1]"
+                  label="Total Campaigns"
+                  value={campaigns.length}
                />
-               <StatCard 
-                  icon={FaEthereum} 
-                  iconColor="text-[#10B981]" 
-                  label="Total ETH Raised" 
-                  value={totalRaised} 
+               <StatCard
+                  icon={FaEthereum}
+                  iconColor="text-[#10B981]"
+                  label="Total ETH Raised"
+                  value={totalRaised}
                />
-               <StatCard 
-                  icon={FaRocket} 
-                  iconColor="text-[#F59E0B]" 
-                  label="Active Campaigns" 
-                  value={activeCampaigns} 
+               <StatCard
+                  icon={FaRocket}
+                  iconColor="text-[#F59E0B]"
+                  label="Active Campaigns"
+                  value={activeCampaigns}
                />
             </div>
          )}
