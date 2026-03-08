@@ -3,11 +3,22 @@ import { useStateContext } from '../context';
 import DisplayCampaigns from '../components/DisplayCampaigns';
 import { daysLeft } from '../utils';
 
-const StatCard = ({ label, value, icon }) => (
-   <div className="flex-1 min-w-[140px] flex flex-col items-center justify-center p-5 bg-[#1c1c24] rounded-[12px] gap-2">
-      <span className="text-3xl">{icon}</span>
-      <h3 className="font-epilogue font-bold text-[22px] text-white">{value}</h3>
-      <p className="font-epilogue font-normal text-[13px] text-[#808191] text-center">{label}</p>
+// Import icons from react-icons
+import { FaClipboardList, FaEthereum, FaRocket } from 'react-icons/fa';
+
+const StatCard = ({ label, value, icon: IconComponent, iconColor }) => (
+   <div className="flex-1 min-w-[180px] flex items-center p-4 bg-gradient-to-br from-[#1F2937] to-[#111827] border border-[#374151] rounded-xl gap-4 hover:-translate-y-1 hover:shadow-lg hover:border-[#6366F1]/50 transition-all duration-300 group">
+      <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 bg-[#374151]/40 ${iconColor} group-hover:scale-110 transition-transform duration-300`}>
+         <IconComponent size={20} />
+      </div>
+      <div className="flex flex-col">
+         <p className="font-epilogue font-medium text-[11px] text-[#9CA3AF] uppercase tracking-wider mb-1">
+            {label}
+         </p>
+         <h3 className="font-epilogue font-bold text-[20px] text-white leading-none">
+            {value}
+         </h3>
+      </div>
    </div>
 );
 
@@ -35,13 +46,28 @@ const Profile = () => {
    ).length;
 
    return (
-      <div>
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
          {/* Stats bar */}
          {campaigns.length > 0 && (
             <div className="flex flex-wrap gap-4 mb-8">
-               <StatCard icon="📋" label="Total Campaigns" value={campaigns.length} />
-               <StatCard icon="💎" label="Total ETH Raised" value={`${totalRaised} ETH`} />
-               <StatCard icon="🚀" label="Active Campaigns" value={activeCampaigns} />
+               <StatCard 
+                  icon={FaClipboardList} 
+                  iconColor="text-[#6366F1]" 
+                  label="Total Campaigns" 
+                  value={campaigns.length} 
+               />
+               <StatCard 
+                  icon={FaEthereum} 
+                  iconColor="text-[#10B981]" 
+                  label="Total ETH Raised" 
+                  value={totalRaised} 
+               />
+               <StatCard 
+                  icon={FaRocket} 
+                  iconColor="text-[#F59E0B]" 
+                  label="Active Campaigns" 
+                  value={activeCampaigns} 
+               />
             </div>
          )}
 
