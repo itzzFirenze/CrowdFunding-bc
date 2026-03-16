@@ -1,6 +1,6 @@
 import React from 'react';
 import { thirdweb } from '../assets';
-import { daysLeft, calculateBarPercentage } from '../utils';
+import { daysLeft, calculateBarPercentage, resolveIpfsUrl } from '../utils';
 import { FaCheckCircle, FaClock } from 'react-icons/fa';
 
 const CATEGORY_COLORS = {
@@ -27,7 +27,7 @@ const FundCard = ({ owner, title, description, target, deadline, amountCollected
       >
          <div className="relative overflow-hidden shrink-0">
             <img
-               src={image}
+               src={resolveIpfsUrl(image)}
                alt={title}
                className='w-full h-[180px] object-cover group-hover:scale-110 transition-transform duration-500'
             />

@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useStateContext } from '../context';
 import { useToast } from '../context/ToastContext';
 import { CustomButton, CountBox, Loader } from '../components';
-import { calculateBarPercentage, daysLeft } from '../utils';
+import { calculateBarPercentage, daysLeft, resolveIpfsUrl } from '../utils';
 import { thirdweb } from '../assets';
 import {
    FaCircle, FaCheckCircle, FaClock, FaTimesCircle, FaMoneyBillWave,
@@ -246,7 +246,7 @@ const CampaignDetails = () => {
          <div className="w-full flex lg:flex-row flex-col gap-8">
             <div className="flex-1 flex-col">
                <div className="relative overflow-hidden rounded-2xl border border-[#374151]">
-                  <img src={state.image} alt={state.title} className="w-full h-[410px] object-cover" />
+                  <img src={resolveIpfsUrl(state.image)} alt={state.title} className="w-full h-[410px] object-cover" />
                   <span className={`absolute top-4 left-4 px-4 py-1.5 rounded-full text-white text-[12px] font-epilogue font-bold shadow-lg backdrop-blur-sm ${categoryColor}`}>
                      {category}
                   </span>
@@ -297,7 +297,7 @@ const CampaignDetails = () => {
 
                {/* Story */}
                <div>
-                  <div className="flex items-center justify-between mb-4">
+                  {/* <div className="flex items-center justify-between mb-4">
                      <SectionHeading>Story</SectionHeading>
                      <button
                         onClick={handleShare}
@@ -305,7 +305,7 @@ const CampaignDetails = () => {
                      >
                         {copied ? <><FaCheck className="text-emerald-500" /> Copied!</> : <><FaShareAlt /> Share</>}
                      </button>
-                  </div>
+                  </div> */}
                   <div className="p-6 bg-gradient-to-br from-[#1F2937] to-[#111827] border border-[#374151] rounded-2xl">
                      <p className="font-epilogue font-normal text-[15px] text-[#9CA3AF] leading-[28px] text-justify whitespace-pre-wrap">
                         {state.description}

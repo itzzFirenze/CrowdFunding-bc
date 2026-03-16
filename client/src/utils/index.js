@@ -23,3 +23,22 @@ export const checkIfImage = (url, callback) => {
    img.onload = () => callback(true);
    img.onerror = () => callback(false);
 };
+
+/**
+ * Resolve an IPFS CID or ipfs:// URI to a public Pinata gateway URL.
+ * Plain https:// URLs are returned unchanged (backwards-compatible).
+ * @param {string} urlOrCid
+ * @returns {string}
+ */
+export const resolveIpfsUrl = (urlOrCid) => {
+  if (!urlOrCid) return '';
+  if (urlOrCid.startsWith('ipfs://')) {
+    const cid = urlOrCid.replace('ipfs://', '');
+    return `https://gateway.pinata.cloud/ipfs/${cid}`;
+  }
+  // Already a plain CID without prefix (fallback)
+  if (!urlOrCid.startsWith('http') && /^[A-Za-z0-9]{46,}$/.test(urlOrCid)) {
+    return `https://gateway.pinata.cloud/ipfs/${urlOrCid}`;
+  }
+  return urlOrCid;
+};

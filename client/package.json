@@ -11,6 +11,7 @@
   "dependencies": {
     "@thirdweb-dev/react": "^4.9.4",
     "@thirdweb-dev/sdk": "^4.0.99",
+    "axios": "^1.13.6",
     "ethers": "^5.8.0",
     "react": "^18.3",
     "react-dom": "^18.3",

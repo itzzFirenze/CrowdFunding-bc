@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStateContext } from '../context';
-import { CustomButton, FormField, Loader } from '../components';
-import { checkIfImage } from '../utils';
+import { CustomButton, FormField, Loader, IpfsImageUpload } from '../components';
 
 const CATEGORIES = ['Education', 'Health', 'Technology', 'Art', 'Community', 'Other'];
 
@@ -26,23 +25,20 @@ const CreateCampaign = () => {
 
    const handleSubmit = async (e) => {
       e.preventDefault();
-      checkIfImage(form.image, async (exists) => {
-         if (exists) {
-            setIsLoading(true);
-            try {
-               await createCampaign({ ...form });
-               navigate('/');
-            } catch (err) {
-               console.error(err);
-               alert('Failed to create campaign. Please try again.');
-            } finally {
-               setIsLoading(false);
-            }
-         } else {
-            alert('Please provide a valid image URL.');
-            setForm({ ...form, image: '' });
-         }
-      });
+      if (!form.image) {
+         alert('Please upload a campaign image before submitting.');
+         return;
+      }
+      setIsLoading(true);
+      try {
+         await createCampaign({ ...form });
+         navigate('/');
+      } catch (err) {
+         console.error(err);
+         alert('Failed to create campaign. Please try again.');
+      } finally {
+         setIsLoading(false);
+      }
    };
 
    return (
@@ -118,13 +114,17 @@ const CreateCampaign = () => {
                />
             </div>
 
-            <FormField
-               labelName="Campaign Image *"
-               placeholder="Place image URL of your campaign"
-               inputType="url"
-               value={form.image}
-               handleChange={(e) => handleFormFieldChange('image', e)}
-            />
+            {/* Campaign Image — IPFS Upload */}
+            <div className='flex flex-col flex-1 w-full'>
+               <label className='font-epilogue font-medium text-[13px] leading-[22px] text-[#9CA3AF] mb-[10px] uppercase tracking-wide'>
+                  Campaign Image *&nbsp;
+                  <span className='normal-case text-[#6366F1] font-normal'>(stored on IPFS)</span>
+               </label>
+               <IpfsImageUpload
+                  value={form.image}
+                  onChange={(cid) => setForm({ ...form, image: cid })}
+               />
+            </div>
 
             {/* Submit Button */}
             <div className='flex justify-center items-center mt-[40px] mb-4'>
