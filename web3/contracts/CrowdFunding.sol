@@ -66,9 +66,7 @@ contract CrowdFunding {
 
     // ─── Functions ────────────────────────────────────────────────────────────
 
-    /**
-     * @dev Create a new crowdfunding campaign.
-     */
+    // Create a new crowdfunding campaign.
     function createCampaign(
         address _owner,
         string memory _title,
@@ -98,9 +96,7 @@ contract CrowdFunding {
         return numberOfCampaigns - 1;
     }
 
-    /**
-     * @dev Donate ETH to a campaign. Funds are held in the contract (escrow).
-     */
+    // Donate ETH to a campaign. Funds are held in the contract (escrow).
     function donateToCampaign(uint256 _id)
         public
         payable
@@ -125,9 +121,9 @@ contract CrowdFunding {
     }
 
     /**
-     * @dev Campaign owner withdraws all collected funds.
-     *      Allowed when: goal is reached OR deadline has passed (regardless of goal).
-     *      Cannot withdraw from a cancelled campaign.
+     *  Campaign owner withdraws all collected funds.
+     *  Allowed when: goal is reached OR deadline has passed (regardless of goal).
+     *  Cannot withdraw from a cancelled campaign.
      */
     function withdrawFunds(uint256 _id)
         public
@@ -154,8 +150,8 @@ contract CrowdFunding {
     }
 
     /**
-     * @dev Owner cancels the campaign. Stops new donations.
-     *      Donors can then claim full refunds via claimRefund().
+     * Owner cancels the campaign. Stops new donations.
+     * Donors can then claim full refunds via claimRefund().
      */
     function cancelCampaign(uint256 _id)
         public
@@ -172,8 +168,8 @@ contract CrowdFunding {
     }
 
     /**
-     * @dev A donor reclaims their full contribution.
-     *      Available when: campaign is cancelled OR deadline passed & goal not met.
+     *  A donor reclaims their full contribution.
+     *  Available when: campaign is cancelled OR deadline passed & goal not met.
      */
     function claimRefund(uint256 _id)
         public
@@ -202,9 +198,7 @@ contract CrowdFunding {
         emit RefundClaimed(_id, msg.sender, refundAmount);
     }
 
-    /**
-     * @dev Returns the live on-chain status of a campaign.
-     */
+    // Returns the live on-chain status of a campaign.
     function getCampaignStatus(uint256 _id)
         public
         view
@@ -238,9 +232,7 @@ contract CrowdFunding {
         return allCampaigns;
     }
 
-    /**
-     * @dev Returns how much a specific donor contributed to a campaign.
-     */
+    // Returns how much a specific donor contributed to a campaign.
     function getDonorContribution(uint256 _id, address _donor)
         public
         view

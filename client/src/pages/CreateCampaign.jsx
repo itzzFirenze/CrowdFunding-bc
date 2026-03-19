@@ -118,7 +118,6 @@ const CreateCampaign = () => {
             <div className='flex flex-col flex-1 w-full'>
                <label className='font-epilogue font-medium text-[13px] leading-[22px] text-[#9CA3AF] mb-[10px] uppercase tracking-wide'>
                   Campaign Image *&nbsp;
-                  <span className='normal-case text-[#6366F1] font-normal'>(stored on IPFS)</span>
                </label>
                <IpfsImageUpload
                   value={form.image}
@@ -131,7 +130,7 @@ const CreateCampaign = () => {
                <CustomButton
                   btnType="submit"
                   title="Submit New Campaign"
-                  styles="bg-gradient-to-r from-[#10B981] to-[#059669] shadow-lg shadow-emerald-500/30 hover:scale-105 transition-all w-full sm:w-auto px-10 py-4 text-[16px]"
+                  styles="bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] shadow-lg shadow-emerald-500/30 hover:scale-105 transition-all w-full sm:w-auto px-10 py-4 text-[16px]"
                />
             </div>
          </form>

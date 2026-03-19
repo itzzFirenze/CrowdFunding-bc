@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { FaExternalLinkAlt } from 'react-icons/fa';
 import { useStateContext } from '../context';
 import { CustomButton } from './';
 import { logo, menu, searchIcon, thirdweb } from '../assets';
@@ -29,6 +30,15 @@ const Navbar = () => {
 
          {/* Desktop Navigation */}
          <div className='sm:flex hidden flex-row justify-end gap-4'>
+            <a
+               href="https://sepolia.etherscan.io/address/0xa2b9860CF6071Cba3E3DA90F700a0cdaC558732D"
+               target="_blank"
+               rel="noopener noreferrer"
+               className="flex items-center justify-center gap-2 px-4 min-h-[52px] rounded-[10px] bg-[#1c1c24] border border-[#374151] text-[#9CA3AF] hover:text-white hover:border-[#6366F1] transition-all duration-300 shadow-md group font-epilogue font-semibold text-[16px]"
+            >
+               <span>Contract</span>
+               <FaExternalLinkAlt size={14} className="group-hover:text-[#6366F1] transition-colors" />
+            </a>
             <CustomButton
                btnType="button"
                title={address ? 'Create a campaign' : 'Connect'}
@@ -88,7 +98,16 @@ const Navbar = () => {
                      </li>
                   ))}
                </ul>
-               <div className='flex mx-4'>
+               <div className='flex mx-4 flex-col gap-4'>
+                  <a
+                     href="https://sepolia.etherscan.io/address/0xa2b9860CF6071Cba3E3DA90F700a0cdaC558732D"
+                     target="_blank"
+                     rel="noopener noreferrer"
+                     className="flex items-center justify-center gap-2 w-full min-h-[52px] rounded-[10px] bg-[#1c1c24] border border-[#374151] text-[#9CA3AF] hover:text-white hover:border-[#6366F1] transition-all duration-300 shadow-md group font-epilogue font-semibold text-[16px]"
+                  >
+                     <span>Etherscan Contract</span>
+                     <FaExternalLinkAlt size={14} className="group-hover:text-[#6366F1] transition-colors" />
+                  </a>
                   <CustomButton
                      btnType="button"
                      title={address ? 'Create a campaign' : 'Connect Wallet'}

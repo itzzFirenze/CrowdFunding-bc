@@ -331,7 +331,7 @@ const CampaignDetails = () => {
                               <div className="w-8 h-8 rounded-full bg-[#374151] flex items-center justify-center text-[12px] font-bold text-[#9CA3AF]">
                                  {index + 1}
                               </div>
-                              <p className="font-epilogue font-medium text-[14px] text-[#D1D5DB] break-all truncate max-w-[150px] sm:max-w-[300px]">
+                              <p className="font-epilogue font-medium text-[14px] text-[#D1D5DB] break-all  max-w-[150px] sm:max-w-[350px]">
                                  {item.donator}
                               </p>
                            </div>
